@@ -1,0 +1,63 @@
+name: Build domains.dat
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**/README.md"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Download list
+        run: mkdir data && curl -o data/antifilter-community https://raw.githubusercontent.com/itdoginfo/allow-domains/main/Russia/inside-raw.lst
+
+      - name: Build dat file
+        run: |
+          go run ./ --exportlists=antifilter-community --outputname=domains.dat
+      - name: List output directory
+        run: |
+          ls -R ./
+          
+      - name: Generate sha256 hash
+        run: |
+          sha256sum domains.dat > domains.dat.sha256sum
+          
+      - name: List directory before move
+        run: |
+          ls -R ./
+      - name: Move files to publish directory
+        run: |
+          mkdir -p publish
+          mv ./*.dat ./*.sha256sum ./publish
+      - name: List publish directory
+        run: |
+          ls -R ./publish
+      - name: Release and upload assets
+        run: |
+          gh release create ${{ env.TAG_NAME }} -t ${{ env.RELEASE_NAME }} \
+            ./publish/*.dat \
+            ./publish/*.dat.sha256sum
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        

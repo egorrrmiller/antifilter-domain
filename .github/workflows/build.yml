@@ -2,7 +2,7 @@ name: Build domains.dat
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 */8 * * *"
   push:
     branches:
       - master
@@ -25,8 +25,8 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "RELEASE_NAME=$(date +%Y-%m-%d)" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         shell: bash
 
       - name: Download list

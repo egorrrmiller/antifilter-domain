@@ -25,12 +25,12 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "RELEASE_NAME=$(date +'%Y-%m-%d-%H-%m-%s')" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +'%Y%m%d%H%m%s')" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +'%Y%m%d')" >> $GITHUB_ENV
         shell: bash
 
       - name: Download list
-        run: mkdir data && curl -o data/antifilter-community https://raw.githubusercontent.com/itdoginfo/allow-domains/main/Russia/inside-raw.lst
+        run: mkdir data && curl -o data/antifilter-community https://raw.githubusercontent.com/egorrrmiller/antifilter-domain/main/domains.lst
 
       - name: Build dat file
         run: |

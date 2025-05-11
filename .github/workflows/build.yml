@@ -25,8 +25,8 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "RELEASE_NAME=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +'%Y%m%d')" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$(date +'%Y-%m-%d-%HH-%mm-%ss')" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +'%Y%m%d%HH%mm%ss')" >> $GITHUB_ENV
         shell: bash
 
       - name: Download list
